@@ -1,124 +1,262 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Memory {
   id: string
-  category: string
-  emoji: string
+  name: string
   color: string
+  rgbColor: string
   glowColor: string
   memory: string
-  description: string
+  initialX: number
+  initialY: number
+  driftDuration: number
+  breatheDuration: number
+  pulseDelay: number
 }
 
 const MEMORIES: Memory[] = [
   {
     id: 'comfort',
-    category: 'Comfort',
-    emoji: '🌙',
-    color: '#a78bfa',
-    glowColor: 'rgba(167, 139, 250, 0.6)',
-    memory: '[Memory placeholder: A moment of pure comfort]',
-    description: 'Safe spaces where you breathe easy',
+    name: 'Comfort',
+    color: '#d4a574',
+    rgbColor: '212, 165, 116',
+    glowColor: 'rgba(212, 165, 116, 0.4)',
+    memory: 'Late nights that felt safe.',
+    initialX: -120,
+    initialY: -80,
+    driftDuration: 12,
+    breatheDuration: 4.2,
+    pulseDelay: 0,
   },
   {
     id: 'depth',
-    category: 'Depth',
-    emoji: '🌊',
-    color: '#60a5fa',
-    glowColor: 'rgba(96, 165, 250, 0.6)',
-    memory: '[Memory placeholder: Understanding runs deep]',
-    description: 'Conversations that touch your soul',
+    name: 'Depth',
+    color: '#4a7ba7',
+    rgbColor: '74, 123, 167',
+    glowColor: 'rgba(74, 123, 167, 0.4)',
+    memory: 'Being understood without words.',
+    initialX: 140,
+    initialY: -60,
+    driftDuration: 14,
+    breatheDuration: 4.8,
+    pulseDelay: 2,
   },
   {
     id: 'joy',
-    category: 'Joy',
-    emoji: '✨',
-    color: '#fbbf24',
-    glowColor: 'rgba(251, 191, 36, 0.6)',
-    memory: '[Memory placeholder: Pure, unbridled happiness]',
-    description: 'Moments that make you smile uncontrollably',
+    name: 'Joy',
+    color: '#e8c547',
+    rgbColor: '232, 197, 71',
+    glowColor: 'rgba(232, 197, 71, 0.4)',
+    memory: 'Laughing until you forgot to breathe.',
+    initialX: -100,
+    initialY: 100,
+    driftDuration: 13,
+    breatheDuration: 4.5,
+    pulseDelay: 4,
   },
   {
     id: 'curiosity',
-    category: 'Curiosity',
-    emoji: '🔮',
-    color: '#ec4899',
-    glowColor: 'rgba(236, 72, 153, 0.6)',
-    memory: '[Memory placeholder: Questions that shaped you]',
-    description: 'Wonder that keeps you exploring',
+    name: 'Curiosity',
+    color: '#b4a7d6',
+    rgbColor: '180, 167, 214',
+    glowColor: 'rgba(180, 167, 214, 0.4)',
+    memory: 'Questions that kept you wondering.',
+    initialX: 130,
+    initialY: 110,
+    driftDuration: 15,
+    breatheDuration: 4.9,
+    pulseDelay: 3,
   },
   {
     id: 'growth',
-    category: 'Growth',
-    emoji: '🌱',
-    color: '#10b981',
-    glowColor: 'rgba(16, 185, 129, 0.6)',
-    memory: '[Memory placeholder: Becoming who you are]',
-    description: 'Challenges that made you stronger',
+    name: 'Growth',
+    color: '#a4c69d',
+    rgbColor: '164, 198, 157',
+    glowColor: 'rgba(164, 198, 157, 0.4)',
+    memory: 'Becoming who you needed to be.',
+    initialX: 0,
+    initialY: -120,
+    driftDuration: 16,
+    breatheDuration: 5,
+    pulseDelay: 5,
   },
   {
     id: 'connection',
-    category: 'Connection',
-    emoji: '💫',
-    color: '#8b5cf6',
-    glowColor: 'rgba(139, 92, 246, 0.6)',
-    memory: '[Memory placeholder: Hearts intertwined]',
-    description: 'The people who see you completely',
+    name: 'Connection',
+    color: '#d4d4e8',
+    rgbColor: '212, 212, 232',
+    glowColor: 'rgba(212, 212, 232, 0.4)',
+    memory: 'The people who saw all of you.',
+    initialX: -130,
+    initialY: 50,
+    driftDuration: 13.5,
+    breatheDuration: 4.6,
+    pulseDelay: 1,
   },
 ]
 
 export default function CoreMemories() {
   const [selectedMemory, setSelectedMemory] = useState<string | null>(null)
-  const [orbPositions, setOrbPositions] = useState<
-    Record<string, { x: number; y: number }>
-  >({})
+  const [hoverMemory, setHoverMemory] = useState<string | null>(null)
+  const [pulseOrb, setPulseOrb] = useState<string | null>(null)
+  const sceneRef = useRef<HTMLDivElement>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  // Initialize random positions for orbs
+  // Track mouse position for magnetic effect
   useEffect(() => {
-    const positions: Record<string, { x: number; y: number }> = {}
-    MEMORIES.forEach((memory) => {
-      positions[memory.id] = {
-        x: (Math.random() - 0.5) * 300,
-        y: (Math.random() - 0.5) * 200,
+    const handleMouseMove = (e: MouseEvent) => {
+      if (sceneRef.current) {
+        const rect = sceneRef.current.getBoundingClientRect()
+        setMousePos({
+          x: e.clientX - rect.left - rect.width / 2,
+          y: e.clientY - rect.top - rect.height / 2,
+        })
       }
-    })
-    setOrbPositions(positions)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Subtle drift animation for orbs
-  const getDriftVariants = (id: string) => ({
-    initial: {
-      x: orbPositions[id]?.x || 0,
-      y: orbPositions[id]?.y || 0,
-    },
-    animate: {
-      x: [orbPositions[id]?.x || 0, (orbPositions[id]?.x || 0) + 30, orbPositions[id]?.x || 0],
-      y: [orbPositions[id]?.y || 0, (orbPositions[id]?.y || 0) - 20, orbPositions[id]?.y || 0],
-    },
-  })
+  // Living system: orbs pulse and drift subtly
+  useEffect(() => {
+    const pulseInterval = setInterval(() => {
+      const randomOrb = MEMORIES[Math.floor(Math.random() * MEMORIES.length)]
+      setPulseOrb(randomOrb.id)
+      setTimeout(() => setPulseOrb(null), 1500)
+    }, 9000)
+
+    return () => clearInterval(pulseInterval)
+  }, [])
+
+  const getDriftVariants = (memory: Memory, isSelected: boolean) => {
+    const magneticPull = hoverMemory === memory.id ? 15 : 0
+    const hoverX = Math.cos(Math.atan2(mousePos.y, mousePos.x)) * magneticPull
+    const hoverY = Math.sin(Math.atan2(mousePos.y, mousePos.x)) * magneticPull
+
+    return {
+      animate: {
+        x: [
+          memory.initialX,
+          memory.initialX + 40,
+          memory.initialX - 30,
+          memory.initialX,
+        ],
+        y: [
+          memory.initialY,
+          memory.initialY - 35,
+          memory.initialY + 25,
+          memory.initialY,
+        ],
+        transition: {
+          duration: memory.driftDuration,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        },
+      },
+    }
+  }
+
+  const getBreatheVariants = (memory: Memory, isSelected: boolean) => {
+    if (isSelected) {
+      return {
+        animate: {
+          scale: 1.4,
+          opacity: 1,
+          transition: { duration: 0.6 },
+        },
+      }
+    }
+
+    return {
+      animate: {
+        scale: [1, 1.08, 1],
+        opacity: [0.8, 1, 0.8],
+        transition: {
+          duration: memory.breatheDuration,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        },
+      },
+    }
+  }
+
+  const getPulseVariants = (memory: Memory) => {
+    return {
+      animate: {
+        scale: [1, 1.15, 1],
+        boxShadow: [
+          `0 0 40px ${memory.glowColor}`,
+          `0 0 80px ${memory.glowColor}`,
+          `0 0 40px ${memory.glowColor}`,
+        ],
+        transition: {
+          duration: 1.5,
+        },
+      },
+    }
+  }
 
   return (
-    <div className="relative w-full h-full min-h-96 flex items-center justify-center">
-      {/* Background stars */}
-      <div className="absolute inset-0 opacity-30">
-        {Array.from({ length: 20 }).map((_, i) => (
+    <div
+      ref={sceneRef}
+      className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f1419 100%)',
+      }}
+    >
+      {/* SVG for advanced glow filters */}
+      <svg style={{ display: 'none' }} width="0" height="0">
+        <defs>
+          {/* Glass sphere inner light effect */}
+          <radialGradient id="orb-inner" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.4)" />
+            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.1)" />
+            <stop offset="100%" stopColor="rgba(0, 0, 0, 0.3)" />
+          </radialGradient>
+
+          {/* Soft glow filter */}
+          <filter id="soft-glow">
+            <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Larger, softer glow for halo */}
+          <filter id="glow-halo">
+            <feGaussianBlur stdDeviation="16" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Ambient particle background */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
-            key={i}
-            className="absolute rounded-full bg-white"
+            key={`particle-${i}`}
+            className="absolute rounded-full"
             style={{
+              width: Math.random() * 2 + 1,
+              height: Math.random() * 2 + 1,
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              width: Math.random() * 1.5 + 0.5,
-              height: Math.random() * 1.5 + 0.5,
             }}
             animate={{
-              opacity: [0.3, 0.7, 0.3],
+              y: [0, -100, -200],
+              opacity: [0, 0.5, 0],
             }}
             transition={{
-              duration: Math.random() * 4 + 3,
+              duration: Math.random() * 20 + 15,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
@@ -126,195 +264,152 @@ export default function CoreMemories() {
         ))}
       </div>
 
-      {/* SVG for connections */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        style={{ pointerEvents: 'none' }}
+      {/* Instructions */}
+      <motion.div
+        className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
       >
-        {/* Connection lines from selected orb to others */}
-        {selectedMemory &&
-          MEMORIES.filter((m) => m.id !== selectedMemory).map((memory) => (
-            <line
-              key={`line-${memory.id}`}
-              x1="50%"
-              y1="50%"
-              x2={`calc(50% + ${(orbPositions[memory.id]?.x || 0) * 1.2}px)`}
-              y2={`calc(50% + ${(orbPositions[memory.id]?.y || 0) * 1.2}px)`}
-              stroke="rgba(167, 139, 250, 0.3)"
-              strokeWidth="1"
-              strokeDasharray="4"
-              opacity={0.2}
-            />
-          ))}
-      </svg>
+        <p className="text-slate-400 text-sm tracking-widest font-light">
+          Explore the moments that shaped you
+        </p>
+      </motion.div>
 
-      {/* Orbs Container */}
-      <div className="relative w-full h-full flex items-center justify-center">
-        {MEMORIES.map((memory, index) => {
+      {/* Orbs container */}
+      <div className="relative w-full h-full flex items-center justify-center perspective">
+        {MEMORIES.map((memory) => {
           const isSelected = selectedMemory === memory.id
-          const delayFactor = index * 0.1
+          const isHovered = hoverMemory === memory.id
+          const isPulsing = pulseOrb === memory.id
 
           return (
             <motion.div
               key={memory.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 + delayFactor }}
               className="absolute"
+              variants={getDriftVariants(memory, isSelected)}
+              animate="animate"
             >
-              {/* Orb container with breathing animation */}
+              {/* Outer halo glow (very soft) */}
               <motion.div
-                variants={getDriftVariants(memory.id)}
-                initial="initial"
-                animate="animate"
+                className="absolute rounded-full"
+                style={{
+                  width: 180,
+                  height: 180,
+                  top: -90,
+                  left: -90,
+                  background: memory.glowColor,
+                  filter: 'blur(35px)',
+                }}
+                animate={
+                  isSelected
+                    ? {
+                        scale: [1.2, 1.4, 1.2],
+                        opacity: [0.4, 0.8, 0.4],
+                      }
+                    : isPulsing
+                      ? {
+                          scale: [1, 1.3, 1],
+                          opacity: [0.3, 0.6, 0.3],
+                        }
+                      : {
+                          scale: [1, 1.15, 1],
+                          opacity: [0.2, 0.35, 0.2],
+                        }
+                }
                 transition={{
-                  duration: 8 + Math.random() * 4,
-                  repeat: Infinity,
+                  duration: isSelected ? 0.8 : 1.5,
+                  repeat: isSelected ? Infinity : isPulsing ? 1 : Infinity,
                   ease: 'easeInOut',
                 }}
-                className="relative cursor-pointer group"
+                pointerEvents="none"
+              />
+
+              {/* Middle glow ring */}
+              <motion.div
+                className="absolute rounded-full border"
+                style={{
+                  width: 140,
+                  height: 140,
+                  top: -70,
+                  left: -70,
+                  borderColor: memory.color,
+                  borderWidth: 0.5,
+                  opacity: 0.3,
+                }}
+                animate={
+                  isHovered
+                    ? { scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }
+                    : { opacity: 0.2 }
+                }
+                transition={{ duration: 1.2, ease: 'easeInOut' }}
+                pointerEvents="none"
+              />
+
+              {/* Main orb */}
+              <motion.div
+                className="relative w-24 h-24 rounded-full cursor-pointer"
+                style={{
+                  background: `radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.3), ${memory.color})`,
+                  boxShadow: `
+                    0 0 40px ${memory.glowColor},
+                    inset -8px -8px 16px rgba(0, 0, 0, 0.4),
+                    inset 4px 4px 12px rgba(255, 255, 255, 0.2)
+                  `,
+                  border: `1px solid rgba(255, 255, 255, 0.1)`,
+                }}
+                variants={getBreatheVariants(memory, isSelected)}
+                animate={isPulsing ? 'animate' : undefined}
+                custom={getPulseVariants(memory)}
+                onMouseEnter={() => setHoverMemory(memory.id)}
+                onMouseLeave={() => setHoverMemory(null)}
                 onClick={() => setSelectedMemory(isSelected ? null : memory.id)}
+                whileHover={!isSelected ? { scale: 1.12 } : {}}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                {/* Outer glow rings */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
+                {/* Inner light refraction */}
+                <div
+                  className="absolute inset-2 rounded-full"
                   style={{
-                    background: memory.glowColor,
-                    filter: 'blur(20px)',
-                    width: 120,
-                    height: 120,
-                    top: -60,
-                    left: -60,
-                  }}
-                  animate={{
-                    opacity: isSelected ? [0.8, 1, 0.8] : [0.3, 0.6, 0.3],
-                    scale: isSelected ? [1, 1.2, 1] : [1, 1.1, 1],
-                  }}
-                  transition={{
-                    duration: isSelected ? 1.5 : 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
+                    background: 'url(#orb-inner)',
+                    opacity: 0.6,
                   }}
                 />
-
-                {/* Middle ring */}
-                <motion.div
-                  className="absolute inset-0 rounded-full border"
-                  style={{
-                    borderColor: memory.color,
-                    width: 100,
-                    height: 100,
-                    top: -50,
-                    left: -50,
-                    opacity: 0.3,
-                  }}
-                  animate={{
-                    scale: isSelected ? [1, 1.15, 1] : [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: isSelected ? 1.5 : 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-
-                {/* Main orb */}
-                <motion.div
-                  className="relative w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl"
-                  style={{
-                    background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), ${memory.color})`,
-                    boxShadow: `0 0 40px ${memory.glowColor}, inset -2px -2px 5px rgba(0, 0, 0, 0.3)`,
-                    border: `2px solid ${memory.color}`,
-                  }}
-                  animate={{
-                    scale: isSelected ? 1.3 : 1,
-                    y: isSelected ? -40 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: 'easeOut',
-                  }}
-                  whileHover={{ scale: isSelected ? 1.3 : 1.1 }}
-                >
-                  {memory.emoji}
-                </motion.div>
-
-                {/* Category label - appears on hover */}
-                <motion.div
-                  className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center whitespace-nowrap"
-                  animate={{
-                    opacity: isSelected ? 1 : 0,
-                    y: isSelected ? 0 : -10,
-                  }}
-                  transition={{ duration: 0.3 }}
-                  pointerEvents="none"
-                >
-                  <p className="text-sm font-light text-slate-200 tracking-widest">
-                    {memory.category}
-                  </p>
-                </motion.div>
               </motion.div>
+
+              {/* Memory text reveal */}
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.div
+                    className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center whitespace-nowrap"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.8 }}
+                  >
+                    <p
+                      className="text-lg font-light tracking-wide"
+                      style={{ color: memory.color }}
+                    >
+                      "{memory.memory}"
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )
         })}
       </div>
 
-      {/* Memory reveal card - appears when an orb is selected */}
-      <AnimatePresence>
-        {selectedMemory && (
-          <motion.div
-            key={selectedMemory}
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.5 }}
-            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 max-w-md"
-          >
-            <div
-              className="relative bg-gradient-to-br from-slate-800/40 to-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8 shadow-2xl"
-              style={{
-                boxShadow: `0 0 30px ${
-                  MEMORIES.find((m) => m.id === selectedMemory)?.glowColor
-                }`,
-              }}
-            >
-              {/* Accent line at top */}
-              <motion.div
-                className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
-                style={{
-                  background: MEMORIES.find((m) => m.id === selectedMemory)?.color,
-                }}
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-
-              <p className="text-slate-300 text-center font-light italic mb-4">
-                {MEMORIES.find((m) => m.id === selectedMemory)?.memory}
-              </p>
-
-              <p className="text-slate-400 text-center text-sm font-light">
-                {MEMORIES.find((m) => m.id === selectedMemory)?.description}
-              </p>
-
-              {/* Close hint */}
-              <p className="text-slate-500 text-xs text-center mt-6 opacity-60">
-                Click orb again to close
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Instructions */}
+      {/* Bottom instruction */}
       <motion.div
-        className="absolute top-0 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        animate={{ opacity: 0.6 }}
+        transition={{ delay: 2 }}
       >
-        <p className="text-slate-400 text-sm tracking-widest font-light">
-          Click an orb to explore
+        <p className="text-slate-500 text-xs tracking-widest font-light">
+          Click to explore each memory
         </p>
       </motion.div>
     </div>
