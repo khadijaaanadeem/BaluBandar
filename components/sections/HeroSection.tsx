@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { BrainMap } from '@/components/BrainMap'
+import CoreMemories from '@/components/CoreMemories'
 
 const sectionIds = [
   'her-thoughts',
@@ -86,14 +86,14 @@ export default function HeroSection() {
           Scroll to enter orbit ↓
         </motion.p>
 
-        {/* Interactive Brain Map */}
+        {/* Interactive Core Memories Experience */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-16"
         >
-          <BrainMap onPartHover={setSelectedPart} />
+          <CoreMemories />
         </motion.div>
 
         {/* CTA Button */}
