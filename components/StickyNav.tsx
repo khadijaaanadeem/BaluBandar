@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 const SECTIONS = [
   { id: 'hero', label: 'Home', icon: '☕' },
   { id: 'thoughts', label: 'Thoughts', icon: '✨' },
-  { id: 'humor', label: 'Dark Humor', icon: '😈' },
+  { id: 'humor', label: 'Constellation', icon: '🌙' },
   { id: 'people', label: 'People', icon: '🎥' },
   { id: 'future', label: 'Future Self', icon: '🔮' },
   { id: 'polaroids', label: 'Polaroids', icon: '📸' },
