@@ -10,6 +10,9 @@ import KhatuAndBaluSection from '@/components/sections/KhatuAndBaluSection'
 import QuizSection from '@/components/sections/QuizSection'
 import FinaleSection from '@/components/sections/FinaleSection'
 import MusicToggle from '@/components/MusicToggle'
+import StickyNav from '@/components/StickyNav'
+import AmbientBackground from '@/components/AmbientBackground'
+import SectionTransition from '@/components/SectionTransition'
 import { useAudio } from '@/hooks/useAudio'
 
 export default function Home() {
@@ -18,32 +21,55 @@ export default function Home() {
 
   return (
     <main className="relative overflow-x-hidden">
+      <AmbientBackground />
       <MusicToggle enabled={musicEnabled} onChange={setMusicEnabled} />
+      <StickyNav />
       
-      <div id="hero">
+      <section id="hero">
         <HeroSection />
-      </div>
-      <div id="her-thoughts">
+      </section>
+
+      <SectionTransition />
+
+      <section id="thoughts">
         <HerThoughtsSection />
-      </div>
-      <div id="dark-humor">
+      </section>
+
+      <SectionTransition />
+
+      <section id="humor">
         <DarkHumorSection />
-      </div>
-      <div id="people-who-love-you">
+      </section>
+
+      <SectionTransition />
+
+      <section id="people">
         <PeopleWhoLoveYouSection />
-      </div>
-      <div id="her-future-self">
+      </section>
+
+      <SectionTransition />
+
+      <section id="future">
         <HerFutureSelfSection />
-      </div>
-      <div id="khatu-balu">
+      </section>
+
+      <SectionTransition />
+
+      <section id="polaroids">
         <KhatuAndBaluSection musicEnabled={musicEnabled} />
-      </div>
-      <div id="quiz">
+      </section>
+
+      <SectionTransition />
+
+      <section id="quiz">
         <QuizSection />
-      </div>
-      <div id="finale">
+      </section>
+
+      <SectionTransition />
+
+      <section id="ending">
         <FinaleSection />
-      </div>
+      </section>
     </main>
   )
 }
