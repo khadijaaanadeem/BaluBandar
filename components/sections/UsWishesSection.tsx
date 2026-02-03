@@ -109,10 +109,12 @@ export default function UsWishesSection() {
               className="group"
             >
               <motion.p
-                className="text-center text-lg md:text-xl text-slate-700 font-light leading-relaxed lowercase cursor-default"
+                className="text-center text-lg md:text-xl text-white font-light leading-relaxed lowercase cursor-default"
+                style={{
+                  textShadow: '0 0 10px rgba(255, 255, 255, 0.6)',
+                }}
                 whileHover={{
-                  color: '#1e293b',
-                  textShadow: '0 0 8px rgba(247, 208, 70, 0.2)',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(247, 208, 70, 0.4)',
                 }}
                 transition={{ duration: 0.3 }}
               >
