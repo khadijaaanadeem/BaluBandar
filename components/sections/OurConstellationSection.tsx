@@ -402,7 +402,6 @@ export default function OurConstellationSection() {
                     fill="url(#grad-node-glow)"
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
                     style={{
                       background: `radial-gradient(circle, ${
                         hoveredNode === node.id
@@ -415,8 +414,9 @@ export default function OurConstellationSection() {
                       r: hoveredNode === node.id ? [3.5, 6, 3.5] : 3.5,
                     }}
                     transition={{
-                      duration: 0.8,
+                      duration: hoveredNode === node.id ? 0.8 : 0.6,
                       repeat: hoveredNode === node.id ? Infinity : 0,
+                      delay: hoveredNode === node.id ? 0 : 0.8 + index * 0.1,
                     }}
                     className="cursor-pointer"
                   />
