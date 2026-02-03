@@ -19,7 +19,7 @@ const polaroids: Polaroid[] = [
     front: {
       type: 'image',
       src: '/img1.jpeg',
-      label: 'Coffee Time'
+      label: ''
     },
     back: 'That day you spilled coffee on yourself and laughed it off. Classic Balu. ☕'
   },
@@ -28,34 +28,34 @@ const polaroids: Polaroid[] = [
     front: {
       type: 'image',
       src: '/img2.jpeg',
-      label: 'Adventures'
+      label: ''
     },
-    back: 'Remember when we got lost but found the best ice cream place? Worth it. 🍦'
+    back: 'getting lost with you for coffee will always be my favourite road trip'
   },
   {
     id: 3,
     front: {
       type: 'image',
       src: '/img3.jpeg',
-      label: 'Cat Cuddles'
+      label: ''
     },
-    back: 'Your future cat won\'t stand a chance against your love. 🐱'
+    back: 'idc if you are 33 days older than me, you will always be my bacha'
   },
   {
     id: 4,
     front: {
       type: 'image',
       src: '/img4.jpeg',
-      label: 'Late Night Talks'
+      label: ''
     },
-    back: 'The conversations that last till 3 AM. You get me like no one else. 💭'
+    back: 'my favourite picture'
   },
   {
     id: 5,
     front: {
       type: 'image',
       src: '/img5.jpeg',
-      label: 'Laughter'
+      label: ''
     },
     back: 'Your laugh is contagious. The whole world needs more of it. 😄'
   },
@@ -64,7 +64,7 @@ const polaroids: Polaroid[] = [
     front: {
       type: 'image',
       src: '/img6.jpeg',
-      label: 'Just Us'
+      label: ''
     },
     back: 'In a world full of chaos, you\'re my peace. Forever grateful. 💖'
   },
@@ -73,7 +73,7 @@ const polaroids: Polaroid[] = [
     front: {
       type: 'image',
       src: '/img7.jpeg',
-      label: 'Forever'
+      label: ''
     },
     back: 'And this is just the beginning of our story. Here\'s to many more memories together. 💕'
   },

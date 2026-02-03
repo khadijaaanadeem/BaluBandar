@@ -107,7 +107,7 @@ export default function HerFutureSelfSection() {
                 {/* Caption area */}
                 <div className="h-1/5 flex items-end pt-3">
                   <p className="text-gray-400 text-xs italic tracking-wide text-center w-full">
-                    our future moment
+                    khatu bozo balu perfect always
                   </p>
                 </div>
               </motion.div>

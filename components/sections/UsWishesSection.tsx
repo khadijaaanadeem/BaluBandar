@@ -21,6 +21,8 @@ const wishes = [
   'I hope you look back at this year and feel proud.',
   'I hope you know you\'re capable of more than you think.',
   'I hope this year is kind to you.',
+  'i hope you remain my biggest fan.',
+  'i hope your laugh is always the main reason why i laugh',
 ]
 
 const containerVariants = {

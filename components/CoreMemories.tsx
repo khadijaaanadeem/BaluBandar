@@ -59,9 +59,6 @@ export default function CoreMemories() {
           <h2 className="text-5xl md:text-6xl font-bold text-soft-yellow mb-3">
             🎂 Make a Wish
           </h2>
-          <p className="text-lg text-soft-yellow/70">
-            21 years of moments, infinite possibilities ahead
-          </p>
         </motion.div>
 
         {/* Cake and Candles Container */}
@@ -73,7 +70,7 @@ export default function CoreMemories() {
         >
           {/* Cake */}
           <motion.div
-            className="relative w-48 h-40 mb-12"
+            className="relative w-64 h-52 mb-12"
             animate={wishMade ? { scale: 0.95, opacity: 0.7 } : {}}
             transition={{ duration: 0.5 }}
           >
