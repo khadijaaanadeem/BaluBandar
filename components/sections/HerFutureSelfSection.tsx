@@ -74,65 +74,43 @@ export default function HerFutureSelfSection() {
               ))}
             </motion.div>
 
-            {/* Visual side - cozy bakery/coffee aesthetic */}
+            {/* Visual side - Polaroid Frame */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className="flex justify-center items-center relative"
             >
-              <div className="bg-gray-800 rounded-2xl overflow-hidden shadow-2xl h-96 relative border-2 border-soft-yellow/30">
-                <div className="absolute inset-0 bg-black/20 mix-blend-multiply" />
-                
-                {/* Decorative elements */}
-                <motion.div
-                  className="absolute top-8 left-8 text-5xl"
-                  animate={{ rotate: [0, 10, 0], y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  ☕
-                </motion.div>
+              {/* Polaroid Frame */}
+              <motion.div
+                className="w-64 bg-white p-4 shadow-2xl relative group cursor-default"
+                style={{
+                  aspectRatio: '3/4',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.3), -2px 2px 8px rgba(0,0,0,0.1)',
+                  transform: 'perspective(1000px) rotateY(-5deg)',
+                }}
+                whileHover={{
+                  transform: 'perspective(1000px) rotateY(-5deg) rotateZ(2deg) scale(1.02)',
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Photo area - empty/faint */}
+                <div className="w-full h-4/5 bg-gradient-to-b from-gray-100 to-gray-200 rounded-sm flex items-center justify-center border border-gray-300/30 relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="w-full h-full bg-soft-yellow" />
+                  </div>
+                  <span className="text-gray-400 text-sm font-light absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    not taken yet.
+                  </span>
+                </div>
 
-                <motion.div
-                  className="absolute top-12 right-8 text-5xl"
-                  animate={{ rotate: [0, -10, 0], y: [0, 10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  🐱
-                </motion.div>
-
-                <motion.div
-                  className="absolute bottom-8 left-1/4 text-5xl"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  🍰
-                </motion.div>
-
-                <motion.div
-                  className="absolute bottom-12 right-1/4 text-5xl"
-                  animate={{ rotate: [0, 20, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  🩺
-                </motion.div>
-
-                {/* Center glow */}
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  animate={{ opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                >
-                  <div className="w-32 h-32 bg-soft-yellow rounded-full filter blur-3xl" />
-                </motion.div>
-
-                {/* Text overlay */}
-                <div className="absolute inset-0 flex items-end justify-center pb-8">
-                  <p className="text-white text-center text-sm font-semibold">
-                    Your Dream, Our Reality 💭✨
+                {/* Caption area */}
+                <div className="h-1/5 flex items-end pt-3">
+                  <p className="text-gray-400 text-xs italic tracking-wide text-center w-full">
+                    our future moment
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </motion.div>
