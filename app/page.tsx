@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import HeroSection from '@/components/sections/HeroSection'
-import HerThoughtsSection from '@/components/sections/HerThoughtsSection'
+import UsWishesSection from '@/components/sections/UsWishesSection'
 import OurConstellationSection from '@/components/sections/OurConstellationSection'
 import PeopleWhoLoveYouSection from '@/components/sections/PeopleWhoLoveYouSection'
 import HerFutureSelfSection from '@/components/sections/HerFutureSelfSection'
@@ -32,7 +32,7 @@ export default function Home() {
       <SectionTransition />
 
       <section id="thoughts">
-        <HerThoughtsSection />
+        <UsWishesSection />
       </section>
 
       <SectionTransition />
