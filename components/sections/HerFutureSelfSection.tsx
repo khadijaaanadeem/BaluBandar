@@ -4,7 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 export default function HerFutureSelfSection() {
-  const futureText = "Ten years from now, I see my Balu as a successful Physician Assistant.\nA cat mom.\nWith her own little bakery serving the best coffee, brownies, and pizza bread.\nI see myself calling her every single day at the slightest inconvenience,\njust for her to fix it — like she always does."
+  const futureText = "Ten years from now, I see my Balu as a successful Physician Assistant.\nA cat mom.\nWith her own little bakery serving the best coffee, brownies, and pizza bread.\nI see myself calling her every single day at the slightest inconvenience,\njust for her to fix everything, like she always does. I'll annoy her a little, tell her how she's my biggest fan when in reality it's the opposite. Just to annoy her even more i'll take ten more pictures of her while she's in her lazy haalat to make stickers and tease her later on. We'll have our new favourite dessert, and we will still be sending each other coffee updates and rating them, making a note of which one to try later on. ten years from now, khatu and balu will still have the same bond"
 
   return (
     <section className="min-h-screen bg-black py-20 px-6 flex items-center relative overflow-hidden">
