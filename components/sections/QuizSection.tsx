@@ -20,13 +20,13 @@ const quizQuestions: Question[] = [
   {
     question: "What's her favourite colour?",
     options: ["Soft pink", "Warm brown", "Mint green", "lavender purple"],
-    correct: 4,
+    correct: 3,
     hint: "cozy, just like khatu"
   },
   {
     question: "Favourite musician?",
     options: ["Abdul Hannan", "Maanu", "Karan Aujla", "Atif Aslam"],
-    correct: 1,
+    correct: 0,
     hint: "lumber 1 fan"
   },
   {
@@ -37,9 +37,9 @@ const quizQuestions: Question[] = [
   },
   {
     question: "Favourite ice cream flavor?",
-    options: ["Vanilla", "Chocolate", "Pistachio", "Cookie dough"],
+    options: ["Vanilla", "Whatever Khatu eats", "Pistachio", "Cookie dough"],
     correct: 1,
-    hint: "classic choice"
+    hint: "khatu's choice is her choice"
   },
   {
     question: "Cat person or cat OBSESSED?",
