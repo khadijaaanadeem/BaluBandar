@@ -21,7 +21,7 @@ const polaroids: Polaroid[] = [
       src: '/img1.jpeg',
       label: ''
     },
-    back: 'That day you spilled coffee on yourself and laughed it off. Classic Balu. ☕'
+    back: 'khatu bozo balu perfect always'
   },
   {
     id: 2,
