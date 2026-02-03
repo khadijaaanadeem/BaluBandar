@@ -1,417 +1,320 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 
-interface Memory {
-  id: string
-  name: string
-  color: string
-  rgbColor: string
-  glowColor: string
-  memory: string
-  initialX: number
-  initialY: number
-  driftDuration: number
-  breatheDuration: number
-  pulseDelay: number
-}
+const CANDLE_COUNT = 21
 
-const MEMORIES: Memory[] = [
-  {
-    id: 'comfort',
-    name: 'Comfort',
-    color: '#F7D046',
-    rgbColor: '247, 208, 70',
-    glowColor: 'rgba(247, 208, 70, 0.45)',
-    memory: 'Late nights that felt safe.',
-    initialX: -120,
-    initialY: -80,
-    driftDuration: 12,
-    breatheDuration: 4.2,
-    pulseDelay: 0,
-  },
-  {
-    id: 'depth',
-    name: 'Depth',
-    color: '#4A90E2',
-    rgbColor: '74, 144, 226',
-    glowColor: 'rgba(74, 144, 226, 0.45)',
-    memory: 'Being understood without words.',
-    initialX: 140,
-    initialY: -60,
-    driftDuration: 14,
-    breatheDuration: 4.8,
-    pulseDelay: 2,
-  },
-  {
-    id: 'joy',
-    name: 'Joy',
-    color: '#F7D046',
-    rgbColor: '247, 208, 70',
-    glowColor: 'rgba(247, 208, 70, 0.45)',
-    memory: 'Laughing until you forgot to breathe.',
-    initialX: -100,
-    initialY: 100,
-    driftDuration: 13,
-    breatheDuration: 4.5,
-    pulseDelay: 4,
-  },
-  {
-    id: 'curiosity',
-    name: 'Curiosity',
-    color: '#9B59B6',
-    rgbColor: '155, 89, 182',
-    glowColor: 'rgba(155, 89, 182, 0.4)',
-    memory: 'Questions that kept you wondering.',
-    initialX: 130,
-    initialY: 110,
-    driftDuration: 15,
-    breatheDuration: 4.9,
-    pulseDelay: 3,
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    color: '#9EDC7B',
-    rgbColor: '158, 220, 123',
-    glowColor: 'rgba(158, 220, 123, 0.35)',
-    memory: 'Becoming who you needed to be.',
-    initialX: 0,
-    initialY: -120,
-    driftDuration: 16,
-    breatheDuration: 5,
-    pulseDelay: 5,
-  },
-  {
-    id: 'connection',
-    name: 'Connection',
-    color: '#EDEDED',
-    rgbColor: '237, 237, 237',
-    glowColor: 'rgba(237, 237, 237, 0.35)',
-    memory: 'The people who saw all of you.',
-    initialX: -130,
-    initialY: 50,
-    driftDuration: 13.5,
-    breatheDuration: 4.6,
-    pulseDelay: 1,
-  },
-]
 
 export default function CoreMemories() {
-  const [selectedMemory, setSelectedMemory] = useState<string | null>(null)
-  const [hoverMemory, setHoverMemory] = useState<string | null>(null)
-  const [pulseOrb, setPulseOrb] = useState<string | null>(null)
-  const sceneRef = useRef<HTMLDivElement>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [wishMade, setWishMade] = useState(false)
+  const [candleFlickers, setCandleFlickers] = useState<number[]>([])
 
-  // Track mouse position for magnetic effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (sceneRef.current) {
-        const rect = sceneRef.current.getBoundingClientRect()
-        setMousePos({
-          x: e.clientX - rect.left - rect.width / 2,
-          y: e.clientY - rect.top - rect.height / 2,
-        })
-      }
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
-  // Living system: orbs pulse and drift subtly
-  useEffect(() => {
-    const pulseInterval = setInterval(() => {
-      const randomOrb = MEMORIES[Math.floor(Math.random() * MEMORIES.length)]
-      setPulseOrb(randomOrb.id)
-      setTimeout(() => setPulseOrb(null), 1500)
-    }, 9000)
-
-    return () => clearInterval(pulseInterval)
-  }, [])
-
-  const getDriftVariants = (memory: Memory, isSelected: boolean) => {
-    const magneticPull = hoverMemory === memory.id ? 15 : 0
-    const hoverX = Math.cos(Math.atan2(mousePos.y, mousePos.x)) * magneticPull
-    const hoverY = Math.sin(Math.atan2(mousePos.y, mousePos.x)) * magneticPull
-
-    return {
-      animate: {
-        x: [
-          memory.initialX,
-          memory.initialX + 40,
-          memory.initialX - 30,
-          memory.initialX,
-        ],
-        y: [
-          memory.initialY,
-          memory.initialY - 35,
-          memory.initialY + 25,
-          memory.initialY,
-        ],
-        transition: {
-          duration: memory.driftDuration,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        },
-      },
-    }
+  const handleMakeWish = () => {
+    setWishMade(true)
+    // Flicker all candles on click
+    setCandleFlickers(Array.from({ length: CANDLE_COUNT }, (_, i) => i))
+    
+    setTimeout(() => {
+      setCandleFlickers([])
+    }, 600)
   }
 
-  const getBreatheVariants = (memory: Memory, isSelected: boolean) => {
-    if (isSelected) {
-      return {
-        animate: {
-          scale: 1.4,
-          opacity: 1,
-          transition: { duration: 0.6 },
-        },
-      }
-    }
+  const getCandleFlameAnimation = (index: number) => ({
+    animate: {
+      y: [0, -4, 2, -3, 1, 0],
+      opacity: wishMade ? [1, 0.6, 0.5, 0.4, 0.2, 0] : [0.8, 1, 0.9, 1, 0.85, 0.95],
+    },
+    transition: {
+      duration: 2.5 + Math.random() * 1,
+      repeat: Infinity,
+      delay: index * 0.05 + Math.random() * 0.3,
+      ease: 'easeInOut',
+    },
+  })
 
-    return {
-      animate: {
-        scale: [1, 1.08, 1],
-        opacity: [0.8, 1, 0.8],
-        transition: {
-          duration: memory.breatheDuration,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        },
-      },
-    }
-  }
-
-  const getPulseVariants = (memory: Memory) => {
-    return {
-      animate: {
-        scale: [1, 1.15, 1],
-        boxShadow: [
-          `0 0 40px ${memory.glowColor}`,
-          `0 0 80px ${memory.glowColor}`,
-          `0 0 40px ${memory.glowColor}`,
-        ],
-        transition: {
-          duration: 1.5,
-        },
-      },
-    }
-  }
+  const getFlickerAnimation = (index: number) => 
+    candleFlickers.includes(index)
+      ? {
+          scale: [1, 0.9, 1.1, 0.8, 1],
+          opacity: [1, 0.7, 1, 0.6, 1],
+        }
+      : {}
 
   return (
-    <div
-      ref={sceneRef}
-      className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f1419 100%)',
-      }}
-    >
-      {/* SVG for advanced glow filters */}
-      <svg style={{ display: 'none' }} width="0" height="0">
-        <defs>
-          {/* Glass sphere inner light effect */}
-          <radialGradient id="orb-inner" cx="35%" cy="35%" r="60%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.4)" />
-            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.1)" />
-            <stop offset="100%" stopColor="rgba(0, 0, 0, 0.3)" />
-          </radialGradient>
-
-          {/* Soft glow filter */}
-          <filter id="soft-glow">
-            <feGaussianBlur stdDeviation="8" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          {/* Larger, softer glow for halo */}
-          <filter id="glow-halo">
-            <feGaussianBlur stdDeviation="16" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Ambient particle background */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <motion.div
-            key={`particle-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, -200],
-              opacity: [0, 0.5, 0],
-            }}
-            transition={{
-              duration: Math.random() * 20 + 15,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
+    <section className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-black flex items-center justify-center py-20 px-6 relative overflow-hidden">
+      {/* Soft background glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full filter blur-3xl" />
       </div>
 
-      {/* Instructions */}
-      <motion.div
-        className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        <p className="text-slate-400 text-sm tracking-widest font-light">
-          Explore the moments that shaped you
-        </p>
-      </motion.div>
+      <div className="max-w-2xl w-full relative z-10">
+        {/* Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-5xl md:text-6xl font-bold text-soft-yellow mb-3">
+            🎂 Make a Wish
+          </h2>
+          <p className="text-lg text-soft-yellow/70">
+            21 years of moments, infinite possibilities ahead
+          </p>
+        </motion.div>
 
-      {/* Orbs container */}
-      <div className="relative w-full h-full flex items-center justify-center perspective">
-        {MEMORIES.map((memory) => {
-          const isSelected = selectedMemory === memory.id
-          const isHovered = hoverMemory === memory.id
-          const isPulsing = pulseOrb === memory.id
-
-          return (
+        {/* Cake and Candles Container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-center justify-center"
+        >
+          {/* Cake */}
+          <motion.div
+            className="relative w-48 h-40 mb-12"
+            animate={wishMade ? { scale: 0.95, opacity: 0.7 } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Cake glow background */}
             <motion.div
-              key={memory.id}
-              className="absolute"
-              variants={getDriftVariants(memory, isSelected)}
-              animate="animate"
-            >
-              {/* Outer halo glow (very soft) */}
-              <motion.div
-                className="absolute rounded-full"
-                style={{
-                  width: 180,
-                  height: 180,
-                  top: -90,
-                  left: -90,
-                  background: memory.glowColor,
-                  filter: 'blur(35px)',
-                }}
-                animate={
-                  isSelected
-                    ? {
-                        scale: [1.2, 1.4, 1.2],
-                        opacity: [0.4, 0.8, 0.4],
-                      }
-                    : isPulsing
-                      ? {
-                          scale: [1, 1.3, 1],
-                          opacity: [0.3, 0.6, 0.3],
-                        }
-                      : {
-                          scale: [1, 1.15, 1],
-                          opacity: [0.2, 0.35, 0.2],
-                        }
-                }
-                transition={{
-                  duration: isSelected ? 0.8 : 1.5,
-                  repeat: isSelected ? Infinity : isPulsing ? 1 : Infinity,
-                  ease: 'easeInOut',
-                }}
-                pointerEvents="none"
+              className="absolute inset-0 rounded-3xl"
+              style={{
+                background:
+                  'radial-gradient(ellipse at center, rgba(155, 89, 182, 0.3) 0%, rgba(155, 89, 182, 0.1) 100%)',
+                filter: 'blur(30px)',
+              }}
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0.5, 0.8, 0.5],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* Cake body */}
+            <svg viewBox="0 0 200 180" className="w-full h-full relative z-10">
+              <defs>
+                <linearGradient
+                  id="cakeGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="#B89FD0" stopOpacity="0.9" />
+                  <stop offset="50%" stopColor="#9B59B6" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#7A3E8F" stopOpacity="0.95" />
+                </linearGradient>
+                <filter id="cakeShadow">
+                  <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="6"
+                    floodOpacity="0.3"
+                  />
+                </filter>
+              </defs>
+
+              {/* Cake base */}
+              <ellipse cx="100" cy="140" rx="75" ry="20" fill="#6B2E7F" opacity="0.4" />
+
+              {/* Cake main body */}
+              <path
+                d="M 40 120 Q 35 80, 50 60 L 150 60 Q 165 80, 160 120 Q 160 140, 100 145 Q 40 140, 40 120"
+                fill="url(#cakeGradient)"
+                filter="url(#cakeShadow)"
               />
 
-              {/* Middle glow ring */}
-              <motion.div
-                className="absolute rounded-full border"
-                style={{
-                  width: 140,
-                  height: 140,
-                  top: -70,
-                  left: -70,
-                  borderColor: memory.color,
-                  borderWidth: 0.5,
-                  opacity: 0.3,
-                }}
-                animate={
-                  isHovered
-                    ? { scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }
-                    : { opacity: 0.2 }
-                }
-                transition={{ duration: 1.2, ease: 'easeInOut' }}
-                pointerEvents="none"
+              {/* Cake top shine */}
+              <ellipse
+                cx="100"
+                cy="75"
+                rx="55"
+                ry="15"
+                fill="white"
+                opacity="0.15"
               />
 
-              {/* Main orb */}
-              <motion.div
-                className="relative w-24 h-24 rounded-full cursor-pointer"
-                style={{
-                  background: `radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.3), ${memory.color})`,
-                  boxShadow: `
-                    0 0 40px ${memory.glowColor},
-                    inset -8px -8px 16px rgba(0, 0, 0, 0.4),
-                    inset 4px 4px 12px rgba(255, 255, 255, 0.2)
-                  `,
-                  border: `1px solid rgba(255, 255, 255, 0.1)`,
-                }}
-                variants={getBreatheVariants(memory, isSelected)}
-                animate={isPulsing ? 'animate' : undefined}
-                custom={getPulseVariants(memory)}
-                onMouseEnter={() => setHoverMemory(memory.id)}
-                onMouseLeave={() => setHoverMemory(null)}
-                onClick={() => setSelectedMemory(isSelected ? null : memory.id)}
-                whileHover={!isSelected ? { scale: 1.12 } : {}}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                {/* Inner light refraction */}
-                <div
-                  className="absolute inset-2 rounded-full"
+              {/* Frosting swirl details */}
+              <path
+                d="M 60 90 Q 70 85, 80 88"
+                stroke="#C9B3D8"
+                strokeWidth="2"
+                fill="none"
+                opacity="0.4"
+              />
+              <path
+                d="M 120 88 Q 130 85, 140 90"
+                stroke="#C9B3D8"
+                strokeWidth="2"
+                fill="none"
+                opacity="0.4"
+              />
+            </svg>
+
+            {/* Candles */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-24 flex items-end justify-center gap-1">
+              {Array.from({ length: CANDLE_COUNT }).map((_, index) => {
+                const angle = (index / CANDLE_COUNT) * Math.PI * 2
+                const radius = 65
+                const x = Math.cos(angle) * radius
+                const y = Math.sin(angle) * radius * 0.4
+
+                return (
+                  <motion.div
+                    key={index}
+                    className="absolute w-1.5 h-16"
+                    style={{
+                      left: `calc(50% + ${x}px)`,
+                      top: `calc(40% + ${y}px)`,
+                      transform: 'translateX(-50%)',
+                    }}
+                  >
+                    {/* Candle stick */}
+                    <div className="w-full h-12 bg-gradient-to-b from-amber-100 to-amber-50 rounded-full" />
+
+                    {/* Flame */}
+                    <motion.div
+                      className="absolute bottom-12 left-1/2 -translate-x-1/2"
+                      {...getCandleFlameAnimation(index)}
+                      {...(candleFlickers.includes(index) && {
+                        animate: {
+                          ...getFlickerAnimation(index),
+                          ...getCandleFlameAnimation(index).animate,
+                        },
+                        transition: {
+                          duration: 0.6,
+                          ease: 'easeInOut',
+                        },
+                      })}
+                    >
+                      <svg
+                        width="12"
+                        height="20"
+                        viewBox="0 0 12 20"
+                        className="drop-shadow-lg"
+                      >
+                        <defs>
+                          <radialGradient
+                            id={`flameGrad-${index}`}
+                            cx="50%"
+                            cy="30%"
+                          >
+                            <stop
+                              offset="0%"
+                              stopColor="#FFF8DC"
+                              stopOpacity="1"
+                            />
+                            <stop
+                              offset="50%"
+                              stopColor="#FFD700"
+                              stopOpacity="0.8"
+                            />
+                            <stop
+                              offset="100%"
+                              stopColor="#FFA500"
+                              stopOpacity="0.4"
+                            />
+                          </radialGradient>
+                        </defs>
+                        <path
+                          d="M 6 20 Q 3 15, 3.5 8 Q 4 4, 6 0 Q 8 4, 8.5 8 Q 9 15, 6 20"
+                          fill={`url(#flameGrad-${index})`}
+                        />
+                      </svg>
+                    </motion.div>
+
+                    {/* Glow around flame */}
+                    <motion.div
+                      className="absolute bottom-12 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full"
+                      style={{
+                        background:
+                          'radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%)',
+                        filter: 'blur(4px)',
+                      }}
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: wishMade ? [0.3, 0.1, 0] : [0.6, 0.8, 0.6],
+                      }}
+                      transition={{
+                        duration: 2 + Math.random() * 0.8,
+                        repeat: Infinity,
+                        delay: index * 0.05,
+                      }}
+                    />
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            {/* Floating particles from candles */}
+            {!wishMade &&
+              Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 bg-yellow-300 rounded-full"
                   style={{
-                    background: 'url(#orb-inner)',
-                    opacity: 0.6,
+                    left: `calc(50% + ${Math.cos((i / 8) * Math.PI * 2) * 40}px)`,
+                    top: '10px',
+                  }}
+                  animate={{
+                    y: -80,
+                    opacity: [1, 0],
+                    scale: [1, 0],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                    ease: 'easeOut',
                   }}
                 />
-              </motion.div>
+              ))}
+          </motion.div>
 
-              {/* Memory text reveal */}
-              <AnimatePresence>
-                {isSelected && (
-                  <motion.div
-                    className="absolute top-32 left-1/2 transform -translate-x-1/2 text-center whitespace-nowrap"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.8 }}
-                  >
-                    <p
-                      className="text-lg font-light tracking-wide"
-                      style={{ color: memory.color }}
-                    >
-                      "{memory.memory}"
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )
-        })}
+          {/* Make a Wish Button */}
+          <motion.button
+            onClick={handleMakeWish}
+            disabled={wishMade}
+            className="relative px-8 py-3 mt-12 text-center font-light tracking-wide text-soft-yellow border border-soft-yellow/40 rounded-full overflow-hidden group disabled:opacity-60 disabled:cursor-not-allowed"
+            whileHover={!wishMade ? { scale: 1.05 } : {}}
+            whileTap={!wishMade ? { scale: 0.98 } : {}}
+          >
+            {/* Button glow */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-soft-yellow/10 via-soft-yellow/20 to-soft-yellow/10 rounded-full"
+              animate={{
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* Text */}
+            <span className="relative z-10 text-sm md:text-base">
+              {wishMade ? '✨ Wish Made ✨' : 'Make a Wish'}
+            </span>
+          </motion.button>
+
+          {/* Message after wish */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={wishMade ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-center text-soft-yellow/60 text-sm mt-8 italic"
+          >
+            Your wish is on its way to the future ✨
+          </motion.p>
+        </motion.div>
       </div>
-
-      {/* Bottom instruction */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: 2 }}
-      >
-        <p className="text-slate-500 text-xs tracking-widest font-light">
-          Click to explore each memory
-        </p>
-      </motion.div>
-    </div>
+    </section>
   )
 }

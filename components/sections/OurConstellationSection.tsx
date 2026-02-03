@@ -479,11 +479,38 @@ export default function OurConstellationSection() {
           </motion.div>
         </div>
 
+        {/* Main Description */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="mt-16 px-6 max-w-4xl mx-auto text-center"
+        >
+          <div className="space-y-6 text-slate-300 font-light leading-relaxed">
+            <p>
+              Pisces and Aquarius work well together because they understand each other without needing everything spelled out. Both signs are thoughtful, intuitive in their own ways, and drawn to the same kinds of things, music, ideas, conversations, and moments that feel meaningful rather than surface-level. They often end up liking the same things, disliking the same things, and reacting to situations in almost the same way.
+            </p>
+            <p>
+              Aquarius brings curiosity, independence, and big-picture thinking, while Pisces brings emotional awareness and depth. Instead of clashing, these traits line up. Aquarius understands Pisces' sensitivity without judging it, and Pisces understands Aquarius' need for space without taking it personally. There's a natural ease in how they connect, like they're on the same wavelength.
+            </p>
+            <p>
+              What makes this pairing stand out is how similar they feel at their core. Even though they approach life differently, their values, interests, and instincts tend to match. That's why Pisces and Aquarius can feel less like opposites and more like mirrors.
+            </p>
+            <motion.p
+              className="text-soft-yellow italic text-lg pt-4"
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              maybe it was always written in the stars
+            </motion.p>
+          </div>
+        </motion.div>
+
         {/* Compatibility nodes info (below constellation) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
+          transition={{ delay: 1.4, duration: 0.8 }}
           className="mt-12 px-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
