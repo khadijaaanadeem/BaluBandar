@@ -1,0 +1,40 @@
+# Documentation files
+*.md
+COMPLETE_SUMMARY.md
+DEPLOYMENT.md
+DOCUMENTATION_INDEX.md
+FEATURES.md
+FILE_MANIFEST.md
+GETTING_STARTED.md
+LATEST_UPDATES.md
+PROJECT_SUMMARY.md
+QUICK_REFERENCE.md
+README.md
+SETUP_GUIDE.md
+START_HERE.md
+WIREFRAMES.md
+
+# Media files
+img*.jpeg
+*.mp3
+'*.mp3'
+
+# Development files
+.git
+.gitignore
+.env.example
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Node
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# IDE
+node_modules/.cache
