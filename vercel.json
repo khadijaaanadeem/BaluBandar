@@ -3,7 +3,6 @@
   "outputDirectory": ".next",
   "cleanUrls": true,
   "framework": "nextjs",
-  "nodeVersion": "20.x",
   "headers": [
     {
       "source": "/audio/:path*",
