@@ -1,4 +1,4 @@
-# Documentation files
+# Documentation files (exclude from deployment)
 *.md
 COMPLETE_SUMMARY.md
 DEPLOYMENT.md
@@ -13,15 +13,9 @@ README.md
 SETUP_GUIDE.md
 START_HERE.md
 WIREFRAMES.md
+VERCEL_DEPLOYMENT.md
 
-# Media files
-img*.jpeg
-*.mp3
-'*.mp3'
-
-# Development files
-.git
-.gitignore
+# Development/local files
 .env.example
 .vscode
 .idea
@@ -29,12 +23,6 @@ img*.jpeg
 *.swo
 *~
 
-# Node
-.pnp
-.pnp.js
-
-# Testing
-coverage
-
-# IDE
-node_modules/.cache
+# Local environment files
+.env.local
+.env.development.local
